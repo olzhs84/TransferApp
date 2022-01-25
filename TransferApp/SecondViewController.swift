@@ -12,6 +12,14 @@ class SecondViewController: UIViewController, UpdatingDataController {
     
     @IBOutlet var dataTextField: UITextField!
     
+    @IBAction func saveDataWithProperty(_ sender: UIButton) {
+   
+        self.navigationController?.viewControllers.forEach {
+            viewController in (viewController as? ViewController)?.updatedData = dataTextField.text ?? ""
+            self.navigationController?.popToViewController(viewController , animated: true)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -26,6 +34,24 @@ class SecondViewController: UIViewController, UpdatingDataController {
     
     var updatingData: String = ""
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        switch segue.identifier {
+        case "toFirstScreen":
+            prepareFirstScreen(segue)
+        default:
+            break
+        }
+        
+    }
+    
+    private func prepareFirstScreen(_ segue: UIStoryboardSegue) {
+        guard let destinationController = segue.destination as? ViewController else {
+            return
+        }
+        
+        destinationController.updatedData = dataTextField.text ?? ""
+    }
     
 }
 
