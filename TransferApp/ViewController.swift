@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, DataUpdateProtocol {
 
     @IBOutlet var dataLabel: UILabel!
     
@@ -28,6 +28,29 @@ class ViewController: UIViewController {
     @IBAction func unwinToFirstScreen(_ segue: UIStoryboardSegue) {
     }
 
+    @IBAction func editDataWithDelegate(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let editScreen = storyboard.instantiateViewController(withIdentifier: "SecondViewController") as! SecondViewController
+        
+        editScreen.updatingData = dataLabel.text ?? ""
+        editScreen.handleUpdateDataDelegate = self
+        self.navigationController?.pushViewController(editScreen, animated: true)
+    }
+    
+    @IBAction func editDataWithClosure(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let editScreen = storyboard.instantiateViewController(withIdentifier: "SecondViewController") as! SecondViewController
+        
+        editScreen.updatingData = dataLabel.text ?? ""
+        
+        editScreen.completionHandler = { [unowned self] updatedValue in
+            updatedData = updatedValue
+            updatedLabel(withText: updatedValue)
+            
+            self.navigationController?.pushViewController(editScreen, animated: true)
+        }
+        
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,9 +82,13 @@ class ViewController: UIViewController {
     }
     
     private func updatedLabel(withText text: String) {
-        dataLabel.text = updatedData
+        dataLabel.text = text
     }
     
+    func onDataUpdate(data: String) {
+        updatedData = data
+        updatedLabel(withText: data)
+    }
     
     
 }

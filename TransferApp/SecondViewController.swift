@@ -20,6 +20,19 @@ class SecondViewController: UIViewController, UpdatingDataController {
         }
     }
     
+    @IBAction func saveDataWithDelegate(_ sender: UIButton) {
+        let updatedData = dataTextField.text ?? ""
+        handleUpdateDataDelegate?.onDataUpdate(data: updatedData)
+        navigationController?.popViewController(animated: true)
+    }
+    
+    @IBAction func saveDataWithClosure(_ sender: UIButton) {
+        let updatedData = dataTextField.text ?? ""
+        
+        completionHandler?(updatedData)
+        navigationController?.popViewController(animated: true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -33,6 +46,9 @@ class SecondViewController: UIViewController, UpdatingDataController {
     }
     
     var updatingData: String = ""
+    var handleUpdateDataDelegate: DataUpdateProtocol?
+    var completionHandler: ((String) -> Void)?
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
